@@ -1,5 +1,6 @@
 package org.biins.spring.ext.rx.mvc;
 
+import org.biins.spring.ext.rx.Observables;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -28,11 +29,7 @@ public class ObservableHandlerMethodReturnValueHandler implements AsyncHandlerMe
             mavContainer.setRequestHandled(true);
         }
         else {
-            DeferredResult<Object> deferredResult = new DeferredResult<>();
-
-            Observable<Object> observable = (Observable<Object>) returnValue;
-            observable.subscribe(deferredResult::setResult, deferredResult::setErrorResult);
-
+            DeferredResult<Object> deferredResult = Observables.toDeferredResult((Observable<Object>) returnValue);
             WebAsyncUtils.getAsyncManager(webRequest).startDeferredResultProcessing(deferredResult, mavContainer);
         }
     }
